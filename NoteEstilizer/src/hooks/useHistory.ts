@@ -15,7 +15,7 @@ export const useHistory = () => {
     const deleteSession = (id:number) => {
         setSessions(prev => {
             const next = prev.filter((session) => {
-                return session.id != id
+                return session.id !== id
             })
             localStorage.setItem("noteestilizer:sessions", JSON.stringify(next))
             return next
