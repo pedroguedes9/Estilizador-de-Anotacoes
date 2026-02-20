@@ -36,12 +36,14 @@ function App() {
     }
   }
   const handleDeleteSession = (id:number) => {
+    if (activeId === id) ollama.cancel()
     history.deleteSession(id)
     if(activeId === id) handleNew()
+
   }
   return (
     <>
-      <div className='flex flex-row'>
+      <div className='flex flex-row h-screen w-screen overflow-hidden bg-[#0d0d0d]'>
         {sidebarOpen && (
           <Sidebar 
             activeId={activeId} 
@@ -53,13 +55,13 @@ function App() {
           />
         )}
         
-        <div className='flex flex-col'>
+        <div className='flex-1 flex flex-col overflow-hidden '>
           <TopBar 
             onDelete={() => handleDeleteSession(activeId)} 
             onToggleSidebar={() => setSidebarOpen(prev => !prev)} 
             title={history.sessions.find(s => s.id === activeId)?.title ?? "Nova sessão"}  
           />
-          <div className='flex-row flex'>
+          <div className='flex-row flex flex-1 overflow-hidden'>
             <InputPanel 
               input={input}
               onChange={setInput}

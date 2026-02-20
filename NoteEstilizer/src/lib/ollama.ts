@@ -6,11 +6,14 @@ export const getModels = async () => {
     const json = await dados.json()
     return json.models
 }
-export const streamChat = async (model: string, messages: OllamaMessage[], onChunk: (text: string) => void) => {
+export const streamChat = async (onController: (c: AbortController) => void ,model: string, messages: OllamaMessage[], onChunk: (text: string) => void) => {
+    const controller = new AbortController()
+    onController?.(controller)
     const response = await fetch(ollamaURL + "/api/chat", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({model , messages, stream: true})
+        body: JSON.stringify({model , messages, stream: true}),
+        signal: controller.signal
     })
     const reader = response.body!.getReader()
     const decoder = new TextDecoder()
@@ -25,4 +28,5 @@ export const streamChat = async (model: string, messages: OllamaMessage[], onChu
             if(text) onChunk(text)
         }
     }
+    return controller
 }
